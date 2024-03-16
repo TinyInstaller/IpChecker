@@ -28,6 +28,9 @@ class IpController extends Controller
 
         $ipInfo=$this->ipApiService->getIpGeolocation($ip);
         $ipInfo->makeHidden(['id','provider','created_at','updated_at']);
-        return response()->json($ipInfo);
+        $ipInfo->append('residential');
+        return response()->json($ipInfo->mapWithKeys(function($item){
+            return [$item->provider=>$item];
+        })->toArray());
     }
 }

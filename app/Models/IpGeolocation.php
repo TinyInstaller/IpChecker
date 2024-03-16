@@ -17,4 +17,14 @@ class IpGeolocation extends Model
     {
         return self::query()->where('created_at','<',now()->subDays($days))->delete();
     }
+    protected function getResidentialAttribute()
+    {
+        if(is_null($this->mobile) && is_null($this->proxy) && is_null($this->hosting)){
+            return 'n/a';
+        }
+        if($this->mobile || $this->proxy || $this->hosting){
+            return 'no';
+        }
+        return 'yes';
+    }
 }
