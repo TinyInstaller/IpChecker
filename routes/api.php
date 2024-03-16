@@ -14,4 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/ip/{ip?}',[\App\Http\Controllers\IpController::class,'index']);
+Route::get('/ip/{ip?}',[\App\Http\Controllers\IpController::class,'index'])->name('api.ip');

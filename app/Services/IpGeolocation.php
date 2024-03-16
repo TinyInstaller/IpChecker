@@ -12,6 +12,9 @@ class IpGeolocation
     public function __construct()
     {
         $this->ip = $_SERVER['HTTP_X_REAL_IP']??$_SERVER['REMOTE_ADDR'];
+        if(request()->host()!=='ip.fdev.top'){
+            $this->endpoint=route('api.ip');
+        }
     }
     public function getIpInfo($ip=null)
     {
@@ -21,9 +24,8 @@ class IpGeolocation
         if(!$ip){
             return ['ip'=>$this->ip];
         }
-        return $this->getIpInfoFromApi($ip);
         return Cache::remember('ipinfo_'.$ip, 3600, function () use ($ip) {
-
+            return $this->getIpInfoFromApi($ip);
         });
     }
     public function getIpInfoFromApi($ip=null)
