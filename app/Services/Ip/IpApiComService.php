@@ -32,13 +32,13 @@ class IpApiComService extends IpService
     }
     protected function getInfo($ip)
     {
-        $url = "http://ip-api.com/json/$ip?fields=66842623";
+        $url = "http://ip-api.com/json/$ip?fields=17027071";
         $response = file_get_contents($url);
         return json_decode($response,true);
     }
     protected function getInfoPremium($ip)
     {
-        $url = "https://pro.ip-api.com/json/$ip?fields=66842623&key={$this->apiKey}";
+        $url = "https://pro.ip-api.com/json/$ip?fields=17027071&key={$this->apiKey}";
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 

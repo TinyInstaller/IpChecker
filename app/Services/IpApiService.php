@@ -4,14 +4,25 @@ namespace App\Services;
 
 use App\Models\IpGeolocation;
 use App\Services\Ip\IpApiComService;
+use App\Services\Ip\IpInfoIoService;
+use App\Services\Ip\IpService;
 
 class IpApiService
 {
-    protected $ipApiCom;
-    public function __construct(IpApiComService $ipApiCom)
-    {
-        $this->ipApiCom=$ipApiCom;
+
+    protected $providers=[
+        IpApiComService::class,
+        IpInfoIoService::class
+    ];
+
+    /**
+     * @param $provider
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Foundation\Application|mixed|IpApiComService|IpService
+     */
+    protected function buildProvider($provider){
+        return app($provider);
     }
+
 
     /**
      * @param $ip
@@ -19,14 +30,15 @@ class IpApiService
      */
     public function getIpGeolocation($ip)
     {
-        $providers=[
-            $this->ipApiCom->getProvider()=>$this->ipApiCom,
-        ];
+        $providers=[];
+        foreach ($this->providers as $provider){
+            $providers[$provider]=$this->buildProvider($provider);
+        }
         foreach ($providers as $provider=>$service){
             $geoLocation=IpGeolocation::query()->where(['ip'=>$ip,'provider'=>$provider])->first();
             if(!$geoLocation){
                 try{
-                    $geoLocation=$service->getGeolocation($ip,$provider);
+                    $geoLocation=$service->getGeolocation($ip);
                     $geoLocation->save();
                 }catch (\Exception $e){
                     //continue;
