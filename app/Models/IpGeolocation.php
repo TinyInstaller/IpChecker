@@ -13,4 +13,8 @@ class IpGeolocation extends Model
         'proxy' => 'boolean',
         'hosting' => 'boolean',
     ];
+    public static function purgeOldRecords($days=30)
+    {
+        return self::query()->where('created_at','<',now()->subDays($days))->delete();
+    }
 }

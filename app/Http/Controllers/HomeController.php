@@ -32,10 +32,10 @@ class HomeController extends Controller
             $ipAddr = $userIP;
         }
 
-        $ipInfo = [];
+        $ipInfos = [];
         if (!$errorMessages) {
-            $ipInfo = $this->ipGeolocation->getIpInfo($ipAddr);
-            if (!$ipInfo) {
+            $ipInfos = $this->ipGeolocation->getIpInfo($ipAddr);
+            if (!$ipInfos) {
                 $errorMessages[] = 'Không thể tìm thấy thông tin cho địa chỉ IP ' . $ipAddr;
             }
         }
@@ -54,16 +54,19 @@ class HomeController extends Controller
         ];
         $ipInfoItems = [];
         foreach ($infoLabels as $key => $label) {
-            $infoValue = $ipInfo[$key] ?? '';
-            if (is_array($infoValue)) {
-                $infoValue = implode(', ', $infoValue);
+            foreach ($ipInfos as $provider => $ipInfo) {
+                $infoValue = $ipInfo[$key] ?? '';
+                if (is_array($infoValue)) {
+                    $infoValue = implode(', ', $infoValue);
+                }
+                if ($infoValue) {
+                    $ipInfoItems[$provider][$key] = ['label' => $label, 'value' => $infoValue];
+                }
             }
-            if ($infoValue) {
-                $ipInfoItems[$key] = ['label' => $label, 'value' => $infoValue];
-            }
+
         }
         return view('home', [
-            'ipInfo' => $ipInfoItems,
+            'ipInfos' => $ipInfoItems,
             'errorMessages' => $errorMessages,
             'ip' => $ipInput,
             'countryCode' => $ipInfo['countryCode']??'',

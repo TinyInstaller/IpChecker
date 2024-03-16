@@ -15,8 +15,10 @@ return new class extends Migration
     {
         Schema::create('ip_geolocations', function (Blueprint $table) {
             $table->id();
-            $table->ipAddress('ip')->unique();
-            $table->string('provider', 50)->index()->default('default');
+            $table->ipAddress('ip');
+            $table->string('provider', 50)->default('default');
+            $table->unique(['ip', 'provider']);
+            $table->string('hostname')->nullable();
             $table->string('continent')->nullable();
             $table->string('continentCode')->nullable();
             $table->string('country')->nullable();

@@ -26,19 +26,7 @@ class IpController extends Controller
             return response()->json(['error'=>'Invalid IP address']);
         }
 
-        if(!$ipInfo=IpGeolocation::query()->where('ip',$ip)->first()) {
-            $ipInfoFromApi=$this->ipApiService->getInfoPremium($ip);
-            if(!$ipInfoFromApi){
-                $ipInfoFromApi=$this->ipApiService->getInfo($ip);
-            }
-            if(!$ipInfoFromApi){
-                return response()->json(['error'=>'No data found']);
-            }
-            $ipInfoFromApi['ip']=$ip;
-            $ipInfoFromApi['provider']='ip-api.com';
-            IpGeolocation::query()->create($ipInfoFromApi);
-            $ipInfo=IpGeolocation::query()->where('ip',$ip)->first();
-        }
+        $ipInfo=$this->ipApiService->getIpGeolocation($ip);
         $ipInfo->makeHidden(['id','provider','created_at','updated_at']);
         return response()->json($ipInfo);
     }

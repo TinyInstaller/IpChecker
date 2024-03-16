@@ -2,30 +2,38 @@
 
 namespace App\Services;
 
+use App\Models\IpGeolocation;
+use App\Services\Ip\IpApiComService;
+
 class IpApiService
 {
-    protected $apiKey='';
-    public function __construct()
+    protected $ipApiCom;
+    public function __construct(IpApiComService $ipApiCom)
     {
-        $this->apiKey=config('services.ip-api.key');
+        $this->ipApiCom=$ipApiCom;
     }
 
-    public function getInfo($ip)
+    /**
+     * @param $ip
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getIpGeolocation($ip)
     {
-        $url = "http://ip-api.com/json/$ip";
-        $response = file_get_contents($url);
-        return json_decode($response,true);
-    }
-    public function getInfoPremium($ip)
-    {
-        if(!$this->apiKey){
-            return null;
+        $providers=[
+            $this->ipApiCom->getProvider()=>$this->ipApiCom,
+        ];
+        foreach ($providers as $provider=>$service){
+            $geoLocation=IpGeolocation::query()->where(['ip'=>$ip,'provider'=>$provider])->first();
+            if(!$geoLocation){
+                try{
+                    $geoLocation=$service->getGeolocation($ip,$provider);
+                    $geoLocation->save();
+                }catch (\Exception $e){
+                    //continue;
+                }
+            }
         }
-        $url = "https://pro.ip-api.com/json/$ip?fields=66842623&key=$this->apiKey";
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        curl_close($ch);
-        return json_decode($response, true);
+        $geoLocations=IpGeolocation::query()->where(['ip'=>$ip])->get();
+        return $geoLocations;
     }
 }

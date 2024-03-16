@@ -31,26 +31,31 @@
         </article>
         @endif
 
-        @if($ipInfo)
-            <article class="border">
-                <h5>Ip Information</h5>
-                <p></p>
-                <div>
-                    @foreach ($ipInfo as $key=>$item)
-                        <div class="grid">
-                            <div class="s4">{{$item['label']}}:</div>
-                            <div class="s8"> @if($key==='country')
-                                    <span class="fi fi-{{strtolower($countryCode)}}"></span>
-                                @endif
-                                <span class="break-word">{{$item['value']}}</span>
-                            </div>
+        @if($ipInfos)
+            <div class="grid">
+            @foreach($ipInfos as $provider=>$ipInfo)
+                <div class="s12 m6">
+                    <article class="border">
+                        <h5>{{$provider}}</h5>
+                        <p></p>
+                        <div>
+                            @foreach ($ipInfo as $key=>$item)
+                                <div class="grid">
+                                    <div class="s4">{{$item['label']}}:</div>
+                                    <div class="s8"> @if($key==='country')
+                                            <span class="fi fi-{{strtolower($countryCode)}}"></span>
+                                        @endif
+                                        <span class="break-word">{{$item['value']}}</span>
+                                    </div>
 
+                                </div>
+                                <div class="small-divider"></div>
+                            @endforeach
                         </div>
-                        <div class="small-divider"></div>
-                    @endforeach
+                    </article>
                 </div>
-            </article>
-
+            @endforeach
+            </div>
         @endif
 
     </form>
