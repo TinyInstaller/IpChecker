@@ -46,11 +46,13 @@ class HomeController extends Controller
             'country' => 'Quốc gia',
             'regionName' => 'Vùng',
             'city' => 'Thành phố',
-            'district' => 'Quận',
-            'isp' => 'Dịch vụ Internet',
-            'org' => 'Tổ chức',
-            'as' => 'Đơn vị',
+            'as' => 'Số hiệu mạng',
             'timezone' => 'Múi giờ',
+            'residential' => 'Dân cư',
+            'org' => 'Tổ chức',
+            'isp' => 'Dịch vụ Internet',
+
+
         ];
         $ipInfoItems = [];
         foreach ($infoLabels as $key => $label) {
@@ -59,6 +61,14 @@ class HomeController extends Controller
                 if (is_array($infoValue)) {
                     $infoValue = implode(', ', $infoValue);
                 }
+                if($key=='residential'){
+                    if($infoValue==='n/a') {
+                        $infoValue = 'Không xác định';
+                    }else {
+                        $infoValue = $infoValue == 'yes' ? 'Có' : 'Không';
+                    }
+                }
+
                 if ($infoValue) {
                     $ipInfoItems[$provider][$key] = ['label' => $label, 'value' => $infoValue];
                 }
