@@ -17,12 +17,12 @@
     <style>
 
         @media screen and (min-width: 800px) {
-            main.responsive{
+            main.responsive, footer.responsive{
                 max-inline-size: 80%;
             }
         }
         @media screen and (min-width: 1000px) {
-            main.responsive{
+            main.responsive, footer.responsive{
                 max-inline-size: 60%;
             }
         }
@@ -39,5 +39,13 @@
     </nav>
     @yield('content')
 </main>
+<footer class="responsive">
+
+    <div class="center">
+        By <a href="https://tinyinstaller.com" class="red-text text-accent-1">TinyInstaller</a> |
+        <a href="https://github.com/TinyInstaller/IpChecker" class="red-text text-accent-1">Source code</a>
+    </div>
+
+</footer>
 </body>
 </html>
