@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/popup', [App\Http\Controllers\PopupController::class, 'index']);
+Route::prefix('popup')->group(function(){
+    Route::get('/', [App\Http\Controllers\PopupController::class, 'index']);
+    Route::get('js', [App\Http\Controllers\PopupController::class, 'getJs']);
+    Route::get('css', [App\Http\Controllers\PopupController::class, 'getCss']);
+});
 Route::get('/{ip?}', [App\Http\Controllers\HomeController::class, 'index']);
