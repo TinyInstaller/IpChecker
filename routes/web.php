@@ -13,4 +13,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/popup', [App\Http\Controllers\PopupController::class, 'index']);
 Route::get('/{ip?}', [App\Http\Controllers\HomeController::class, 'index']);

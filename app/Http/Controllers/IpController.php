@@ -31,6 +31,9 @@ class IpController extends Controller
         $ipInfo->append('residential');
         return response()->json($ipInfo->mapWithKeys(function($item){
             return [$item->provider=>$item];
-        })->toArray());
+        })->toArray(),200,[
+            //Cross-Origin Resource Sharing
+            'Access-Control-Allow-Origin'=>'*'
+        ]);
     }
 }
