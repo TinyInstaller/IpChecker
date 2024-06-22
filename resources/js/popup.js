@@ -3,7 +3,7 @@ import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css'; // optional for styling
 
 //Export IpPopup class
-!function(root){
+!function (root) {
     class IpPopup {
         constructor(options) {
             this.selector = options.selector;
@@ -11,8 +11,10 @@ import 'tippy.js/dist/tippy.css'; // optional for styling
             this.token = options.token || '';
             this.delay = options.delay || 500;
             this.fetchCache = {};
+            this.flagUrl = options.flagUrl || 'https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/flags/4x3/';
             this.setEvents();
         }
+
         async fetchIPInfo(ip) {
             if (!this.fetchCache[ip]) {
                 const response = await fetch(`${this.endpoint}/${ip}?token=${this.token}`);
@@ -20,40 +22,48 @@ import 'tippy.js/dist/tippy.css'; // optional for styling
             }
             return this.fetchCache[ip];
         }
-        setEvents(){
-            let self=this;
+
+        setEvents() {
+            let self = this;
             let tooltipInstance = null;
 
             document.body.addEventListener('mouseover', async (event) => {
                 const target = event.target;
                 if (target.matches(self.selector)) {
-                    const ipAddress = target.textContent;
-                    self.currentIp=ipAddress;
-                    const ipInfos = await self.fetchIPInfo(ipAddress);
-                    //ipinfo is object with provider => {ipinfo object}
-                    //We loop through the object to get the first key
-                    let content;
-                    Object.keys(ipInfos).forEach((key) => {
-                        let ipInfo = ipInfos[key];
-                         content = `As: ${ipInfo.as}<br>Country: ${ipInfo.country}`;
+                    tooltipInstance = target._tippy;
+                    if (!tooltipInstance) {
+                        const ipAddress = target.textContent;
+                        const ipInfos = await self.fetchIPInfo(ipAddress);
+                        //ipinfo is object with provider => {ipinfo object}
+                        //We loop through the object to get the first key
+                        let content;
+                        let ipInfo = ipInfos['all'];
+                        if(ipInfo) {
+                            let as = ipInfo.as || '';
+                            let country = ipInfo.country || '';
+                            let countryCode = (ipInfo.countryCode || '').toLocaleLowerCase();
+                            let flag = `${self.flagUrl}${countryCode}.svg`;
+                            if (!as && !country && !countryCode) return false;
+                            content = `<div class="ip-popup">${as} <img class="country-flag" style="height: 1em" src="${flag}" alt="${country}" title="${country}"></div>`;
+                        }else{
+                            content = `<div class="ip-popup">No data found</div>`;
+                        }
                         //Break the loop
-                        return content;
-                    });
-
-
-                    tooltipInstance = tippy(target, {
-                        content: content,
-                        allowHTML: true,
-                        placement: 'top',
-                        arrow: true,
-                        interactive: true,
-                        duration: [200, 200],
-                    });
+                        tooltipInstance = tippy(target, {
+                            content: content,
+                            allowHTML: true,
+                            placement: 'auto',
+                            arrow: true,
+                            interactive: true,
+                            duration: [500, 500],
+                        });
+                    }
                     tooltipInstance.show();
                 }
             });
 
         }
     }
+
     root.IpPopup = IpPopup;
 }(window)

@@ -29,9 +29,21 @@ class IpController extends Controller
         $ipInfo=$this->ipApiService->getIpGeolocation($ip);
         $ipInfo->makeHidden(['id','provider','created_at','updated_at']);
         $ipInfo->append('residential');
-        return response()->json($ipInfo->mapWithKeys(function($item){
+        $merged=[];
+        $json=$ipInfo->mapWithKeys(function($item)use(&$merged){
+            foreach ($item->toArray() as $key=>$value){
+                if(!isset($merged[$key])){
+                    if(isset($value) && $value!=='n/a') {
+                        $merged[$key] = $value;
+                    }else{
+                        $merged[$key]='';
+                    }
+                }
+            }
             return [$item->provider=>$item];
-        })->toArray(),200,[
+        })->toArray();
+        $json['all']=$merged;
+        return response()->json($json,200,[
             //Cross-Origin Resource Sharing
             'Access-Control-Allow-Origin'=>'*'
         ]);

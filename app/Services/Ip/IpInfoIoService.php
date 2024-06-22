@@ -39,15 +39,15 @@ class IpInfoIoService extends IpService
         $ipGeolocation->ip=$ip;
         $ipGeolocation->provider=$this->getProvider();
         $ipGeolocation->hostname=$info['hostname']??null;
-        $ipGeolocation->city=$info['city'];
-        $ipGeolocation->regionName=$info['region'];
-        $ipGeolocation->countryCode=$info['country'];
+        $ipGeolocation->city=$info['city']??null;
+        $ipGeolocation->regionName=$info['region']??null;
+        $ipGeolocation->countryCode=$info['country']??null;
         $ipGeolocation->country=Country::getName($ipGeolocation->countryCode);
         $ipGeolocation->lat=(float)explode(',',$info['loc'])[0];
         $ipGeolocation->lon=(float)explode(',',$info['loc'])[1];
         $ipGeolocation->timezone=$info['timezone'];
-        $ipGeolocation->zip=$info['postal'];
-        $ipGeolocation->as=$info['org'];
+        $ipGeolocation->zip=$info['postal']??null;
+        $ipGeolocation->as=$info['org']??null;
         //$ipGeolocation->org=$info['org'];
 
         return $ipGeolocation;
