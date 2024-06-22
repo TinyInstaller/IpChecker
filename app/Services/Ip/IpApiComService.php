@@ -4,7 +4,6 @@ namespace App\Services\Ip;
 
 class IpApiComService extends IpService
 {
-    protected $apiKey='';
     public function getProvider()
     {
         return 'ip-api.com';
@@ -13,7 +12,7 @@ class IpApiComService extends IpService
     public function getGeolocation($ip): \App\Models\IpGeolocation
     {
         $ipGeolocation = new \App\Models\IpGeolocation();
-        if(!$this->apiKey && $info=$this->getInfoPremium($ip)) {
+        if(!$info=$this->getInfoPremium($ip)) {
             $info=$this->getInfo($ip);
         }
         if(!$info){
@@ -38,10 +37,23 @@ class IpApiComService extends IpService
     }
     protected function getInfoPremium($ip)
     {
+        if(!$this->apiKey){
+            return null;
+        }
         $url = "https://pro.ip-api.com/json/$ip?fields=17027071&key={$this->apiKey}";
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Accept: */*',
+            'Accept-Language: en-US;q=0.9,en;q=0.8',
+            'Connection: keep-alive',
+            'Origin: https://members.ip-api.com',
+            'Referer: https://members.ip-api.com/',
+            'Sec-Fetch-Dest: empty',
+            'Sec-Fetch-Mode: cors',
+            'Sec-Fetch-Site: same-site',
+            'User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1'
+        ]);
         $response = curl_exec($ch);
         curl_close($ch);
         return json_decode($response, true);

@@ -7,23 +7,19 @@ use App\Support\Country;
 
 class IpInfoIoService extends IpService
 {
-    protected $apiKey;
     public function getProvider()
     {
         return 'ipinfo.io';
     }
     public function getGeolocation($ip): IpGeolocation
     {
-        if(!$this->apiKey){
-            $this->apiKey=config('services.ipinfo.key');
-        }
+        $ipGeolocation = new IpGeolocation();
         if(!$this->apiKey){
             throw new \Exception('No API key provided');
         }
-        $ipGeolocation = new IpGeolocation();
         $info=$this->getInfo($ip);
         if(!$info){
-            return throw new \Exception('No data found');
+            throw new \Exception('No data found');
         }
         //Sample response
         /**

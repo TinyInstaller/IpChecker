@@ -7,14 +7,12 @@ use Illuminate\Support\Facades\Cache;
 class IpGeolocation
 {
     protected $ip;
-    protected $endpoint = 'https://api.fdev.top/v1/ip';
+    protected $endpoint;
     protected static $ipInfoCache = [];
     public function __construct()
     {
         $this->ip = $_SERVER['HTTP_X_REAL_IP']??$_SERVER['REMOTE_ADDR'];
-        if(request()->host()!=='ip.fdev.top'){
-            $this->endpoint=route('api.ip');
-        }
+        $this->endpoint=route('api.ip');
     }
     public function getIpInfo($ip=null)
     {
