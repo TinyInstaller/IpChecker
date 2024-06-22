@@ -48,7 +48,7 @@ import 'tippy.js/dist/tippy.css'; // optional for styling
                         let content;
                         let ipInfo = ipInfos['all'];
                         if(ipInfo) {
-                            let as = ipInfo.as || '';
+                            let as = ipInfo.org || ipInfo.isp || ipInfo.as || '';
                             let country = ipInfo.country || '';
                             let countryCode = (ipInfo.countryCode || '').toLocaleLowerCase();
                             let flag = `${self.flagUrl}${countryCode}.svg`;
