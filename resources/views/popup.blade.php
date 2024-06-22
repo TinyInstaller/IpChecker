@@ -10,8 +10,7 @@
     <h1>Ip Popup</h1>
 
     <div>
-
-        <span class="ip" >8.8.8.8</span>
+        <span class="ip" >34.23.102.67:22</span>
         <span class="ip" >1.1.1.1</span>
     </div>
     <h1>Source code</h1>

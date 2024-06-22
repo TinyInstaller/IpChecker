@@ -32,7 +32,16 @@ import 'tippy.js/dist/tippy.css'; // optional for styling
                 if (target.matches(self.selector)) {
                     tooltipInstance = target._tippy;
                     if (!tooltipInstance) {
-                        const ipAddress = target.textContent;
+                        let ipAddress = target.textContent;
+                        ipAddress=ipAddress.trim();
+                        if(ipAddress.includes(':')){
+                            if(ipAddress.includes('.')){
+                                //IPv4
+                                ipAddress=ipAddress.split(':')[0];
+                            }
+                        }
+
+
                         const ipInfos = await self.fetchIPInfo(ipAddress);
                         //ipinfo is object with provider => {ipinfo object}
                         //We loop through the object to get the first key
