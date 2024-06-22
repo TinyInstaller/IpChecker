@@ -30,11 +30,13 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-    'ip-api.com' => [
-        'key' => env('IP_IPAPI_KEY'),
-    ],
-    'ipinfo.io'=>[
-        'key' => env('IP_IPINFO_KEY'),
+    'ip'=>[
+        'ip-api.com' => [
+            'key' => env('IP_IPAPI_KEY'),
+        ],
+        'ipinfo.io'=>[
+            'key' => env('IP_IPINFO_KEY'),
+        ]
     ]
 
 ];

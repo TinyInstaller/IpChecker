@@ -10,8 +10,8 @@ abstract class IpService
     protected $apiKey;
     public function __construct()
     {
-        $this->config=config('services.'.$this->getProvider(),[]);
-        $this->apiKey=$this->config['key']??null;
+        $this->config=config('services.ip',[]);
+        $this->apiKey=$this->config[$this->getProvider()]['key']??null;
     }
     abstract public function getProvider();
     abstract public function getGeolocation($ip) : IpGeolocation;

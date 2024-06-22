@@ -32,7 +32,8 @@ class IpApiService
     {
         $providers=[];
         foreach ($this->providers as $provider){
-            $providers[$provider]=$this->buildProvider($provider);
+            $provider=$this->buildProvider($provider);
+            $providers[$provider->getProvider()]=$provider;
         }
         foreach ($providers as $provider=>$service){
             $geoLocation=IpGeolocation::query()->where(['ip'=>$ip,'provider'=>$provider])->first();
@@ -41,6 +42,7 @@ class IpApiService
                     $geoLocation=$service->getGeolocation($ip);
                     $geoLocation->save();
                 }catch (\Exception $e){
+                    echo $e->getMessage();
                     //continue;
                 }
             }
