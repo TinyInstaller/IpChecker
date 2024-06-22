@@ -17,13 +17,14 @@ import 'tippy.js/dist/tippy.css'; // optional for styling
             return data;
         }
         setEvents(){
+            let self=this;
             document.addEventListener('DOMContentLoaded', () => {
-                const ips = document.querySelectorAll(this.selector);
+                const ips = document.querySelectorAll(self.selector);
 
                 ips.forEach(ip => {
                     ip.addEventListener('mouseenter', async (event) => {
                         const ipAddress = event.target.textContent;
-                        const ipInfo = await this.fetchIPInfo(ipAddress);
+                        const ipInfo = await self.fetchIPInfo(ipAddress);
                         const content = `City: ${ipInfo.city}, Country: ${ipInfo.country}`;
 
                         tippy(event.target, {
