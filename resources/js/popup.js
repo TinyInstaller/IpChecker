@@ -8,34 +8,51 @@ import 'tippy.js/dist/tippy.css'; // optional for styling
         constructor(options) {
             this.selector = options.selector;
             this.endpoint = options.endpoint || options.api || options.url;
-            this.token = options.token;
+            this.token = options.token || '';
+            this.delay = options.delay || 500;
+            this.fetchCache = {};
             this.setEvents();
         }
         async fetchIPInfo(ip) {
-            const response = await fetch(`${this.endpoint}/${ip}?token=${this.token}`);
-            const data = await response.json();
-            return data;
+            if (!this.fetchCache[ip]) {
+                const response = await fetch(`${this.endpoint}/${ip}?token=${this.token}`);
+                this.fetchCache[ip] = await response.json();
+            }
+            return this.fetchCache[ip];
         }
         setEvents(){
             let self=this;
-            document.addEventListener('DOMContentLoaded', () => {
-                const ips = document.querySelectorAll(self.selector);
+            let tooltipInstance = null;
 
-                ips.forEach(ip => {
-                    ip.addEventListener('mouseenter', async (event) => {
-                        const ipAddress = event.target.textContent;
-                        const ipInfo = await self.fetchIPInfo(ipAddress);
-                        const content = `City: ${ipInfo.city}, Country: ${ipInfo.country}`;
-
-                        tippy(event.target, {
-                            content: content,
-                            placement: 'top',
-                            arrow: true,
-                            duration: [200, 200],
-                        }).show();
+            document.body.addEventListener('mouseover', async (event) => {
+                const target = event.target;
+                if (target.matches(self.selector)) {
+                    const ipAddress = target.textContent;
+                    self.currentIp=ipAddress;
+                    const ipInfos = await self.fetchIPInfo(ipAddress);
+                    //ipinfo is object with provider => {ipinfo object}
+                    //We loop through the object to get the first key
+                    let content;
+                    Object.keys(ipInfos).forEach((key) => {
+                        let ipInfo = ipInfos[key];
+                         content = `As: ${ipInfo.as}<br>Country: ${ipInfo.country}`;
+                        //Break the loop
+                        return content;
                     });
-                });
+
+
+                    tooltipInstance = tippy(target, {
+                        content: content,
+                        allowHTML: true,
+                        placement: 'top',
+                        arrow: true,
+                        interactive: true,
+                        duration: [200, 200],
+                    });
+                    tooltipInstance.show();
+                }
             });
+
         }
     }
     root.IpPopup = IpPopup;
