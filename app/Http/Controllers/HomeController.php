@@ -39,6 +39,7 @@ class HomeController extends Controller
                 $errorMessages[] = 'Không thể tìm thấy thông tin cho địa chỉ IP ' . $ipAddr;
             }
         }
+        unset($ipInfos['all']);
         $infoLabels = [
             'ip' => 'Địa chỉ IP',
             'hostname' => 'Tên máy chủ',
